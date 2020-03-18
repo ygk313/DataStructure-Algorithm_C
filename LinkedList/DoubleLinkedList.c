@@ -7,86 +7,97 @@ typedef struct LinkedNode{
 	struct LinkedNode* prev;
 	struct LinkedNode* next;
 }Node;
+Node org;
 
-Node* head = NULL;
-void init_list(){ head.next = NULL;}
-Node* get_head(){ return head.next;
+void init_list(){ org.next = NULL;
 }
-int is_empty(){ return (head.next == NULL);
+Node* get_head(){ return org.next;
 }
-void error(char* msg){
-	printf("%s\n", msg);
-	exit(1);
+int is_empty(){ return org.next == NULL;
 }
 
 Node* get_entry(int pos){
-	Node* p = head;
-	int i;
-	if (pos == -1)
-		return get_head;
-	else if (is_empty())
-		error("공백 에러");
-	else {
-		for(i=0; i<pos; i++, p=p->next){
-			if (p != NULL)
-				return p;
-		}
-	}	
+	Node* n = &org;
+	int i =-1;
+	for(i=-1; i<pos;i++, n=n->next)
+		if (n==NULL) break;
+	return n;
 }
-
 void replace(int pos, Element e){
-	Node* p = get_entry(pos);
-	if (p!=NULL)
-		p->data = e;	
+	Node* node = get_entry(pos);
+	if(node!=NULL)
+		node->data = e;
 }
 
 int size(){
 	int count = 0;
-	Node* p;
-	for(p=get_head();p!=NULL;p=p->next)
+	Node* n;
+	for(n=get_head(); n!=NULL; n=n->next)
 		count++;
 	return count;
 }
-
 Node* find(Element e){
-	Node* p;
-	for(p=get_head(); p!=NULL; p=p->link)
-		if (p->data == e)
-			return p;
+	Node* n;
+	for(n=get_head(); n!=NULL; n=n->next)
+		if (n->data == e)
+			return n;
+	return ;
 }
 
-void insert_next(Node* p, Node* n){
-	
-	n->prev = prev;
-	n->next = prev->next;
-	if (p->next!=NULL){
-		p->next->prev = n;
-	}
-	p->next = n;
+void print_list(char* msg){
+	Node* n;
+	printf("%s [%d]: ",msg, size());
+	for(n=get_head();n!=NULL; n=n->next)
+		printf("%d ", n->data);
+	printf("\n");
 }
-
-void insert(int pos, Element e)}{
-	Node* new_node, *prev;
+void insert_next(Node* before, Node* n){
+	n->prev = before;
+	n->next = before->next;
+	if (before->next !=NULL) before->next->prev = n;
+	before->next = n;
+}
+void insert(int pos, Element e){
+	Node* prev, *new;
 	prev = get_entry(pos-1);
+	new = (Node*)malloc(sizeof(Node));
+	new->data = e;
+	new->prev = NULL;
+	new->next = NULL;
 	
-	if (prev != NULL){
-		new_node = (Node*)malloc(sizeof(Node));
-		new_node->data = e;
-		new_node->prev = NULL;
-		new_node->next = NULL;
-		
-		insert_next(prev, new_node);
-	}
+	insert_next(prev, new);
+	
 }
-
 void remove_curr(Node* n){
-	if (n->prev!=NULL)n->prev->next = n->next;
-	if (n->next!=NULL)n->next->prev = n->prev;
-	
+	if (n->next!=NULL) n->next->prev = n->prev;
+	if (n->prev!=NULL) n->prev->next = n->next;
 }
-
 void delete(int pos){
 	Node* n = get_entry(pos);
 	if (n!=NULL)
 		remove_curr(n);
+}
+
+void clear_list(){
+	while(is_empty()==0)
+		delete(0);
+}
+
+void main(){
+	init_list();
+	insert(0,10);
+	insert(0,20);
+	insert(1,30);
+	insert(size(),40);
+	insert(2, 50);
+	print_list("이중 연결 리스트로 구현한 List삽입");
+	
+	replace(2,90);
+	print_list("이중연결리스트로 구현한 List 교체");
+	
+	delete(0);
+	delete(1);
+	print_list("이중연결리스트로 구현한 List 삭제");
+	
+	clear_list(); 
 }
