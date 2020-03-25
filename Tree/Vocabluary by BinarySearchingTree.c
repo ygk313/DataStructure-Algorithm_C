@@ -100,7 +100,7 @@ void inorder(TNode*n){
 	}
 }
 
-TNode* insert-word(char* key, char* val){
+TNode* insert_word(char* key, char* val){
 	TNode* n;
 	Record r;
 	strcpy(r.word, key);
@@ -152,6 +152,33 @@ void main(){
 	char command, word[MAX_WORD], meaning[MAX_MEANING];
 	
 	do {
-		printf("[사용법] i - 후기, ")
-	}
+		printf("[사용법] i - 추가, d-삭제, w-단어검색 m-의미검색 p-출력 q-종료 => ");
+		command = getche();
+		printf("\n");
+		
+		switch(command){
+			case 'i':
+				printf("> 삽입단어: "); gets(word);
+				printf("> 단어의미: "); gets(meaning);
+				insert_word(word, meaning);
+				break;
+				
+			case'd':
+				printf("> 삭제 단어:"); gets(word);
+				delete_word(word);
+				break;
+			
+			case 'w':
+				printf("> 검색 단어:"); gets(word);
+				search_word(word);
+				break;
+			case'p' :
+				inorder(root);
+				break;
+			case 'm':
+				printf("> 검색 의미: "); gets(meaning);
+				search_meaning(meaning);
+				break; 
+		}
+	}while(command!='q');
 } 
